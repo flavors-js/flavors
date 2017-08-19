@@ -4,7 +4,7 @@
   "description": "Node.js configuration library.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha test/*/index.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": "flavors-js/flavors",
