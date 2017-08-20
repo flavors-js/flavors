@@ -39,9 +39,44 @@ See `extends` property [documentation](#extends-configuration-property).
 
 ### Configuration file
 
-Configuration file can be defined in multiple ways.
+Configuration files can be provided in multiple formats.
+Each supported format requires special loader to be implemented.<br>
+This module comes with several built-in loaders:
+- [JavaScript loader](#javascript-loader)
+- [JSON loader](#json-loader)
 
-#### Node.js module
+You can use custom loaders by setting `loaders` [option](#loaders-option).
+
+#### Defining custom loader
+
+Custom loader definition is a node.js module that exports object with the following properties:
+
+##### `extension` loader property
+
+Extension of files that are accepted by this loader.
+
+##### `loader` loader property
+
+Function that accepts path to configuration file and returns an object with the following properties:
+ - [`extends`](#extends-configuration-property)
+ - [`load`](#load-configuration-property) (must be a function)
+ - [`merge`](#merge-configuration-property)
+
+```javascript
+module.exports = {
+  extension: '.json',
+  loader: configFile => {
+    return {
+      extends: '
+    }
+  }
+};
+```
+
+#### JavaScript loader
+
+Loads configuration from node.js module.<br>
+You can use this loader with `require('flavors/jsLoader')` (for example in `loaders` [option](#loaders-option)).
 
 ##### Object export
 
@@ -201,6 +236,11 @@ then config will be loaded as:
 }
 ```
 
+#### JSON loader
+
+Configuration definition is the same as JavaScript loader [general configuration definition](#general-configuration-definition) except that obviously `load` property can be only an object.<br>
+You can use this loader with `require('flavors/jsonLoader')` (for example in `loaders` [option](#loaders-option)).
+
 ### Parameters
 
 ```javascript
@@ -214,6 +254,7 @@ It can be simple name like `dev` and such configuration will be loaded
 from `dev/config.js` or it can be composite name like `dev-custom` and
 the configuration will be loaded from `dev/config.js` and `dev/custom/config.js`.
 See also [extending configuration](#extending-configuration).
+
 #### `options` parameter
 
 Optional object parameter containing various options.
@@ -224,13 +265,20 @@ By default composite configurations are loaded from a simple directory structure
 But with multiple configurations like `a-b-c`, `a-b-d`, `a-e-f`, `g-h-i` and when each configuration directory stores additional files it can be more convenient to place configurations under separate directories.
 For instance, setting `configDirName` to `config` makes it search configuration `a-b-c` under `config/a/config/b/config/c` folder.
 
-##### `configNameSeparator` option
-
-String which separates composite configuration name parts. Default value is `-`.
-
 ##### `configFileName` option
 
-Configuration file name. Default value is `config.js`.
+Configuration file name. Default value is `config`.
+
+##### `configNameSeparator` option
+
+String which separates composite configuration name parts. Default value is `-`.<br>
+If you want to use configuration names like `a/b/c` then set it to `/`.
+
+##### `loaders` option
+
+Array of loaders for various configuration file formats.
+By default it's an array of built-in loaders: [JavaScript loader](#javascript-loader) and [JSON loader](#json-loader).<br>
+For example, to disable JSON loader and use only JavaScript loader pass `[require('flavors/jsLoader')]` as `loaders` option value.
 
 ##### `workingDir` option
 

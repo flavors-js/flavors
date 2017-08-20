@@ -5,8 +5,9 @@ const
 module.exports = (configName, options) => {
   const configNameSeparator = options.configNameSeparator || '-';
   const configDirName = options.configDirName || '';
-  const configFileName = options.configFileName || 'config.js';
+  const configFileName = options.configFileName || 'config';
   const workingDir = options.workingDir || process.cwd();
+  const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
 
   function resolveConfigDir(configs) {
     return path.resolve(workingDir, ...configs.map(i => path.join(configDirName, i)));
@@ -16,16 +17,12 @@ module.exports = (configName, options) => {
     return path.resolve(resolveConfigDir(configs), ...parts);
   }
 
-  function resolveConfigFile(configs) {
-    return resolveConfigItemPath(configs, configFileName);
+  function resolveConfigFile(configs, extension) {
+    return resolveConfigItemPath(configs, configFileName + extension);
   }
 
   function getConfigNameParts(configName) {
     return configName.split(configNameSeparator);
-  }
-
-  function getConfigName(configs) {
-    return configs.join(configNameSeparator);
   }
 
   function resolve(configName) {
@@ -34,9 +31,7 @@ module.exports = (configName, options) => {
       configNameParts = getConfigNameParts(configName);
     } else {
       configNameParts = configName;
-      configName = getConfigName(configNameParts);
     }
-    const configFile = resolveConfigFile(configNameParts);
 
     function loadParentConfig() {
       return configNameParts.length > 1
@@ -44,38 +39,24 @@ module.exports = (configName, options) => {
         : {};
     }
 
-    let _extends, load, merge;
-    if (fs.existsSync(configFile)) {
-      const config = require(configFile);
-      if (typeof config === 'function') {
-        load = config;
-      } else if (typeof config === 'object') {
-        if (typeof config.extends === 'string') {
-          _extends = config.extends;
-        }
-        if (typeof config.merge === 'boolean') {
-          merge = config.merge !== false;
-        }
-        if (typeof config.load === 'object') {
-          load = c => config.load;
-        } else if (typeof config.load === 'function') {
-          load = config.load;
-        }
-        if (_extends === undefined && load === undefined && merge === undefined) {
-          load = c => config;
-        }
-      } else {
-        throw new Error(`Can't resolve '${configName}' configuration.`);
+    let config = {};
+
+    for (let loader of loaders) {
+      const configFile = resolveConfigFile(configNameParts, loader.extension);
+      if (fs.existsSync(configFile)) {
+        config = loader.loader(configFile);
+        break;
       }
     }
-    if (load === undefined) {
-      load = c => c;
+
+    if (config.load === undefined) {
+      config.load = c => c;
     }
-    if (merge === undefined) {
-      merge = true;
+    if (config.merge === undefined) {
+      config.merge = true;
     }
-    const parentConfig = merge ? (_extends === undefined ? loadParentConfig() : resolve(_extends)) : {};
-    return Object.assign(parentConfig, load(parentConfig));
+    const parentConfig = config.merge ? (config.extends === undefined ? loadParentConfig() : resolve(config.extends)) : {};
+    return Object.assign(parentConfig, config.load(parentConfig));
   }
 
   return resolve(configName);

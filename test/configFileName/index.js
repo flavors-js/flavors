@@ -1,6 +1,6 @@
 'use strict'
 
-const { assert, flavors, options } = require('../common.js')(__dirname, { configFileName: 'custom.js' });
+const { assert, flavors, options } = require('../common.js')(__dirname, { configFileName: 'custom' });
 const a = { value: 'a' };
 
 describe('config', function () {

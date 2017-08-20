@@ -23,7 +23,9 @@
     "node": ">= 0.9"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "jsLoader.js",
+    "jsonLoader.js"
   ],
   "license": "MIT",
   "bugs": {
