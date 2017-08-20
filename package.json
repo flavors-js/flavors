@@ -20,7 +20,7 @@
     "url": "https://github.com/mxl"
   },
   "engines": {
-    "node": ">= 0.9"
+    "node": ">= 6"
   },
   "files": [
     "index.js",
