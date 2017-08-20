@@ -37,34 +37,45 @@ module.exports = (configName, options) => {
       configName = getConfigName(configNameParts);
     }
     const configFile = resolveConfigFile(configNameParts);
-    let config = {};
 
-    function parentConfig() {
+    function loadParentConfig() {
       return configNameParts.length > 1
         ? resolve(configNameParts.slice(0, configNameParts.length - 1))
         : {};
     }
 
+    let dependsOn, load, merge;
     if (fs.existsSync(configFile)) {
-      config = require(configFile);
+      const config = require(configFile);
       if (typeof config === 'function') {
-        config = (pc => Object.assign(pc, config(pc)))(parentConfig());
+        load = config;
       } else if (typeof config === 'object') {
-        if (typeof config.dependsOn === 'string' || Array.isArray(config.dependsOn)) {
-          config = (c => Object.assign(c,
-            typeof config.load === 'function'
-              ? config.load(c)
-              : (typeof config.load === 'object' ? config.load : {})))(resolve(config.dependsOn));
-        } else {
-          config = Object.assign(parentConfig(), config);
+        if (typeof config.dependsOn === 'string') {
+          dependsOn = config.dependsOn;
+        }
+        if (typeof config.merge === 'boolean') {
+          merge = config.merge !== false;
+        }
+        if (typeof config.load === 'object') {
+          load = c => config.load;
+        } else if (typeof config.load === 'function') {
+          load = config.load;
+        }
+        if (dependsOn === undefined && load === undefined && merge === undefined) {
+          load = c => config;
         }
       } else {
         throw new Error(`Can't resolve '${configName}' configuration.`);
       }
-    } else {
-      config = parentConfig();
     }
-    return config;
+    if (load === undefined) {
+      load = c => c;
+    }
+    if (merge === undefined) {
+      merge = true;
+    }
+    const parentConfig = merge ? (dependsOn === undefined ? loadParentConfig() : resolve(dependsOn)) : {};
+    return Object.assign(parentConfig, load(parentConfig));
   }
 
   return resolve(configName);
