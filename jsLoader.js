@@ -12,7 +12,7 @@ module.exports = {
         _extends = config.extends;
       }
       if (typeof config.merge === 'boolean') {
-        merge = config.merge !== false;
+        merge = config.merge;
       }
       if (typeof config.load === 'object') {
         load = c => config.load;
