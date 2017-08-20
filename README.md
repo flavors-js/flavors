@@ -73,17 +73,6 @@ Function that accepts path to configuration file and returns an object with the 
  - [`load`](#load-configuration-property) (must be a function)
  - [`merge`](#merge-configuration-property)
 
-```javascript
-module.exports = {
-  extension: '.json',
-  loader: configFile => {
-    return {
-      extends: '
-    };
-  }
-};
-```
-
 #### JavaScript loader
 
 Loads configuration from node.js module.<br>
