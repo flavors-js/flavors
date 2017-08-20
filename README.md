@@ -1,7 +1,15 @@
+<div align="center">
+  <a href="https://github.com/flavors-js/flavors">
+    <img width="200" height="200" src="https://flavors-js.github.io/flavors/logo.svg">
+  </a>
+  <br>
+  <br>
+
 [![npm](https://img.shields.io/npm/v/flavors.svg)](https://www.npmjs.com/package/flavors)
 [![Build Status](https://travis-ci.org/flavors-js/flavors.svg?branch=master)](https://travis-ci.org/flavors-js/flavors)
 [![David](https://img.shields.io/david/flavors-js/flavors.svg)](https://david-dm.org/flavors-js/flavors)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+</div>
 
 # flavors
 Node.js configuration library.
