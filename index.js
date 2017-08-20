@@ -28,7 +28,7 @@ module.exports = (configName, options) => {
     return configs.join(configNameSeparator);
   }
 
-  function resolve(configName, initialConfigName) {
+  function resolve(configName) {
     let configNameParts;
     if (typeof configName === 'string') {
       configNameParts = getConfigNameParts(configName);
@@ -36,15 +36,12 @@ module.exports = (configName, options) => {
       configNameParts = configName;
       configName = getConfigName(configNameParts);
     }
-    if (!initialConfigName) {
-      initialConfigName = configName;
-    }
     const configFile = resolveConfigFile(configNameParts);
     let config = {};
 
     function parentConfig() {
       return configNameParts.length > 1
-        ? resolve(configNameParts.slice(0, configNameParts.length - 1), initialConfigName)
+        ? resolve(configNameParts.slice(0, configNameParts.length - 1))
         : {};
     }
 
@@ -57,7 +54,7 @@ module.exports = (configName, options) => {
           config = (c => Object.assign(c,
             typeof config.load === 'function'
               ? config.load(c)
-              : (typeof config.load === 'object' ? config.load : {})))(resolve(config.dependsOn, initialConfigName));
+              : (typeof config.load === 'object' ? config.load : {})))(resolve(config.dependsOn));
         } else {
           config = Object.assign(parentConfig(), config);
         }
