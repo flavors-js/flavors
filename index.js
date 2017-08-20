@@ -55,9 +55,9 @@ module.exports = (configName, options) => {
       } else if (typeof config === 'object') {
         if (typeof config.dependsOn === 'string' || Array.isArray(config.dependsOn)) {
           config = (c => Object.assign(c,
-            typeof config.init === 'function'
-              ? config.init(c)
-              : (typeof config.init === 'object' ? config.init : {})))(resolve(config.dependsOn, initialConfigName));
+            typeof config.load === 'function'
+              ? config.load(c)
+              : (typeof config.load === 'object' ? config.load : {})))(resolve(config.dependsOn, initialConfigName));
         } else {
           config = Object.assign(parentConfig(), config);
         }

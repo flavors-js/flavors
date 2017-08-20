@@ -2,7 +2,7 @@
 
 module.exports = {
   dependsOn: 'a',
-  init: {
+  load: {
     value2: 'c2'
   }
 };
