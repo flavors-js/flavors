@@ -44,14 +44,14 @@ module.exports = (configName, options) => {
         : {};
     }
 
-    let dependsOn, load, merge;
+    let _extends, load, merge;
     if (fs.existsSync(configFile)) {
       const config = require(configFile);
       if (typeof config === 'function') {
         load = config;
       } else if (typeof config === 'object') {
-        if (typeof config.dependsOn === 'string') {
-          dependsOn = config.dependsOn;
+        if (typeof config.extends === 'string') {
+          _extends = config.extends;
         }
         if (typeof config.merge === 'boolean') {
           merge = config.merge !== false;
@@ -61,7 +61,7 @@ module.exports = (configName, options) => {
         } else if (typeof config.load === 'function') {
           load = config.load;
         }
-        if (dependsOn === undefined && load === undefined && merge === undefined) {
+        if (_extends === undefined && load === undefined && merge === undefined) {
           load = c => config;
         }
       } else {
@@ -74,7 +74,7 @@ module.exports = (configName, options) => {
     if (merge === undefined) {
       merge = true;
     }
-    const parentConfig = merge ? (dependsOn === undefined ? loadParentConfig() : resolve(dependsOn)) : {};
+    const parentConfig = merge ? (_extends === undefined ? loadParentConfig() : resolve(_extends)) : {};
     return Object.assign(parentConfig, load(parentConfig));
   }
 

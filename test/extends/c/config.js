@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  dependsOn: 'a',
+  extends: 'a',
   load: {
     value2: 'c2'
   }
