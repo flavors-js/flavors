@@ -45,6 +45,9 @@ This module comes with several built-in loaders:
 - [JavaScript loader](#javascript-loader)
 - [JSON loader](#json-loader)
 
+Also other loaders are available as separate node.js modules:
+- [YAML loader](https://github.com/flavors-js/flavors-loader-yaml)
+
 You can use custom loaders by setting `loaders` [option](#loaders-option).
 
 #### Defining custom loader
@@ -238,7 +241,7 @@ then config will be loaded as:
 
 #### JSON loader
 
-Configuration definition is the same as JavaScript loader [general configuration definition](#general-configuration-definition) except that obviously `load` property can be only an object.<br>
+Configuration definition is the same as when using JavaScript loader [general configuration definition](#general-configuration-definition) except that obviously `load` property can be only an object.<br>
 You can use this loader with `require('flavors/jsonLoader')` (for example in `loaders` [option](#loaders-option)).
 
 ### Parameters
