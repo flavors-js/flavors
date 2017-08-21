@@ -1,14 +1,22 @@
 'use strict'
 
 const { assert, flavors, options } = require('../common.js')(__dirname);
-const ab = { value1: 'a1', value2: 'b2' };
-const ac = { value2: 'c2' };
 
-describe('config', function () {
-  it('merges', function () {
-    assert.deepEqual(flavors('a-b', options()), ab);
+describe('configuration merging', function () {
+  describe('is applied', function () {
+    it('when `merge` is not specified', function () {
+      assert.deepEqual(flavors('a-b', options()), { value1: 'a1', value2: 'b2' });
+    });
   });
-  it('does not merge', function () {
-    assert.deepEqual(flavors('a-c', options()), ac);
+  describe('is not applied', function () {
+    it('when `merge: false`', function () {
+      assert.deepEqual(flavors('a-c', options()), { value2: 'c2' });
+    });
+    it('when `load` is not specified', function () {
+      assert.deepEqual(flavors('a-d', options()), {});
+    });
+    it('but parent config is still passed to `load`', function () {
+      assert.deepEqual(flavors('a-e', options()), {value: 'a1'});
+    });
   });
 });
