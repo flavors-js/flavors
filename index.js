@@ -16,6 +16,7 @@ module.exports = (configName, options) => {
       configNameParts = configName.split(configNameSeparator);
     } else {
       configNameParts = configName;
+      configName = configNameParts.join(configNameSeparator);
     }
 
     const configDir = path.resolve(workingDir, ...configNameParts.map(i => path.join(configDirName, i)));
