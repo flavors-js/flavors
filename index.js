@@ -10,10 +10,18 @@ module.exports = (configName, options) => {
   const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
   const transform = typeof options.transform === 'function' ? options.transform : _ => _;
 
+  function getConfigNameParts(configName) {
+    return configName.split(configNameSeparator);
+  }
+
+  const
+    originalConfigName = configName,
+    originalConfigNameParts = getConfigNameParts(configName);
+
   function resolve(configName) {
     let configNameParts;
     if (typeof configName === 'string') {
-      configNameParts = configName.split(configNameSeparator);
+      configNameParts = getConfigNameParts(configName);
     } else {
       configNameParts = configName;
       configName = configNameParts.join(configNameSeparator);
@@ -54,7 +62,16 @@ module.exports = (configName, options) => {
       config.merge = true;
     }
     const parentConfig = config.extends === undefined ? loadParentConfig() : resolve(config.extends);
-    return transform(Object.assign(config.merge ? parentConfig : {}, config.load(parentConfig)), {
+    return transform(Object.assign(config.merge ? parentConfig : {}, config.load(parentConfig, {
+      config: {
+        name: originalConfigName,
+        nameParts: originalConfigNameParts
+      },
+      currentConfig: {
+        name: configName,
+        nameParts: configNameParts
+      }
+    })), {
       configDir,
       configName,
       configFile

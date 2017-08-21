@@ -111,7 +111,7 @@ module.exports = {
 *a/b/config.js:*
 
 ```javascript
-module.exports = config => {
+module.exports = (config, info) => {
   return {
     parentValue: config.value,
     value: 2,
@@ -136,6 +136,8 @@ will load
 
 Here `a-b` configuration extends `a` configuration. So `a` configuration will be loaded and passed to an exported function.
 
+Read more about function export in `load` configuration property [documentation](#load-configuration-property).
+
 ##### General configuration definition
 
 The above object and function exports are the special cases of a general configuration definition:
@@ -158,7 +160,27 @@ In other case exported object is treated as [simple object export](#object-expor
 ###### `load` configuration property
 
 Object or function accepting configuration the current configuration extends.
-If no other special properties are specified then it can be simplified to [simple object export](#object-export) or [function export](#function-export).
+If no other special properties are specified then it can be simplified to [simple object export](#object-export) or [function export](#function-export).<br>
+Function accepts two parameters:
+- extended configuration object
+- object with the following properties:
+
+```javascript
+{
+  "config": {
+    "name": "a-b",
+    "nameParts": ["a", "b"]
+  },
+  "currentConfig": {
+    "name": "a",
+    "nameParts": ["a"]
+  }
+}
+```
+
+`config` contains properties of the configuration that we want to load.<br>
+`currentConfig` contains properties of the configuration in extension hierarchy that is currently being loaded.<br>
+`nameParts` is the name of a configuration split by `configNameSeparator`.
 
 ###### `extends` configuration property
 
