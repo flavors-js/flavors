@@ -8,29 +8,24 @@ module.exports = (configName, options) => {
   const configFileName = options.configFileName || 'config';
   const workingDir = options.workingDir || process.cwd();
   const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
-
-  function resolveConfigDir(configs) {
-    return path.resolve(workingDir, ...configs.map(i => path.join(configDirName, i)));
-  }
-
-  function resolveConfigItemPath(configs, ...parts) {
-    return path.resolve(resolveConfigDir(configs), ...parts);
-  }
-
-  function resolveConfigFile(configs, extension) {
-    return resolveConfigItemPath(configs, configFileName + extension);
-  }
-
-  function getConfigNameParts(configName) {
-    return configName.split(configNameSeparator);
-  }
+  const transform = typeof options.transform === 'function' ? options.transform : _ => _;
 
   function resolve(configName) {
     let configNameParts;
     if (typeof configName === 'string') {
-      configNameParts = getConfigNameParts(configName);
+      configNameParts = configName.split(configNameSeparator);
     } else {
       configNameParts = configName;
+    }
+
+    const configDir = path.resolve(workingDir, ...configNameParts.map(i => path.join(configDirName, i)));
+
+    function resolveConfigItemPath(...parts) {
+      return path.resolve(configDir, ...parts);
+    }
+
+    function resolveConfigFile(extension) {
+      return resolveConfigItemPath(configFileName + extension);
     }
 
     function loadParentConfig() {
@@ -41,8 +36,10 @@ module.exports = (configName, options) => {
 
     let config = {};
 
+    let configFile;
+
     for (let loader of loaders) {
-      const configFile = resolveConfigFile(configNameParts, loader.extension);
+      configFile = resolveConfigFile(loader.extension);
       if (fs.existsSync(configFile)) {
         config = loader.loader(configFile);
         break;
@@ -56,7 +53,11 @@ module.exports = (configName, options) => {
       config.merge = true;
     }
     const parentConfig = config.merge ? (config.extends === undefined ? loadParentConfig() : resolve(config.extends)) : {};
-    return Object.assign(parentConfig, config.load(parentConfig));
+    return transform(Object.assign(parentConfig, config.load(parentConfig)), {
+      configDir,
+      configName,
+      configFile
+    });
   }
 
   return resolve(configName);

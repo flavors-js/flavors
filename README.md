@@ -280,6 +280,15 @@ Array of loaders for various configuration file formats.
 By default it's an array of built-in loaders: [JavaScript loader](#javascript-loader) and [JSON loader](#json-loader).<br>
 For example, to disable JSON loader and use only JavaScript loader pass `[require('flavors/jsLoader')]` as `loaders` option value.
 
+##### `transform` option
+
+Function that applies transformation to each configuration in extension hierarchy.<br>
+It accepts configuration object as first argument and object with additional properties as second:
+
+- `configDir` - full path to directory where configuration file is located
+- `configFile` - full path to configuration file if it exists
+- `configName` - configuration name
+
 ##### `workingDir` option
 
 By default configuration is resolved relatively to `process.cwd()` path.
