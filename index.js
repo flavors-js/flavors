@@ -56,13 +56,13 @@ module.exports = (configName, options) => {
     }
 
     if (config.load === undefined) {
-      config.load = _ => {};
+      config.load = _ => ({});
     }
     if (config.merge === undefined) {
       config.merge = true;
     }
     const parentConfig = config.extends === undefined ? loadParentConfig() : resolve(config.extends);
-    return transform(Object.assign(config.merge ? parentConfig : {}, config.load(parentConfig, {
+    const info = {
       config: {
         name: originalConfigName,
         nameParts: originalConfigNameParts
@@ -71,11 +71,8 @@ module.exports = (configName, options) => {
         name: configName,
         nameParts: configNameParts
       }
-    })), {
-      configDir,
-      configName,
-      configFile
-    });
+    };
+    return transform(Object.assign(config.merge ? parentConfig : {}, config.load(parentConfig, info)), info);
   }
 
   return resolve(configName);

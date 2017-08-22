@@ -163,7 +163,7 @@ Object or function accepting configuration the current configuration extends.
 If no other special properties are specified then it can be simplified to [simple object export](#object-export) or [function export](#function-export).<br>
 Function accepts two parameters:
 - extended configuration object
-- object with the following properties:
+- object with the additional information:
 
 ```javascript
 {
@@ -178,9 +178,9 @@ Function accepts two parameters:
 }
 ```
 
-`config` contains properties of the configuration that we want to load.<br>
-`currentConfig` contains properties of the configuration in extension hierarchy that is currently being loaded.<br>
-`nameParts` is the name of a configuration split by `configNameSeparator`.
+- `config` contains properties of the configuration that we want to load.<br>
+- `currentConfig` contains properties of the configuration in extension hierarchy that is currently being loaded.<br>
+- `nameParts` is the name of a configuration split by `configNameSeparator`.
 
 ###### `extends` configuration property
 
@@ -305,11 +305,7 @@ For example, to disable JSON loader and use only JavaScript loader pass `[requir
 ##### `transform` option
 
 Function that applies transformation to each configuration in extension hierarchy.<br>
-It accepts configuration object as first argument and object with additional properties as second:
-
-- `configDir` - full path to directory where configuration file is located
-- `configFile` - full path to configuration file if it exists
-- `configName` - configuration name
+It accepts configuration object as first argument and object with the additional information as second (see `load` configuration property [documentation](#load-configuration-property)).
 
 ##### `workingDir` option
 
