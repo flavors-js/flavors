@@ -16,7 +16,7 @@ describe('info', function () {
             nameParts: ['a']
           }
         });
-      } else {
+      } else if (config.value === 2) {
         assert.deepEqual(info, {
           config: {
             name: 'a-b',

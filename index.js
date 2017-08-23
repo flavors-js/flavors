@@ -22,7 +22,7 @@ module.exports = (configName, options) => {
 
   function load(config) {
     function loadParentConfig() {
-      return config.nameParts.length > 1
+      return config.nameParts.length > 0
         ? load(resolve(config.nameParts.slice(0, config.nameParts.length - 1)))
         : {};
     }

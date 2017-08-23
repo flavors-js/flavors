@@ -39,7 +39,14 @@ There are two ways to extend configuration.
 
 #### Directory tree
 
-Configuration with name `a-b-c` is located in `a/b/c/config.js` file and extends `a/b/config.js` configuration which in its turn has `a-b` name and extends `a` configuration located in `a/config.js`.
+Configuration with name `a-b-c` is loaded from the following configuration files:
+- `config.js`
+- `a/config.js`
+- `a/b/config.js`
+- `a/b/c/config.js`
+- `a/b/c/config.js`
+
+On each step loaded configuration is merged with configuration from previous step.
 
 #### Using `extends` property
 
