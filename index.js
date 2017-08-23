@@ -34,6 +34,8 @@ module.exports = (configName, options) => {
         nameParts: originalConfigNameParts
       },
       currentConfig: {
+        dir: config.dir,
+        file: config.file,
         name: config.name,
         nameParts: config.nameParts
       }
@@ -42,32 +44,32 @@ module.exports = (configName, options) => {
   }
 
   function resolve(configName) {
-    let configNameParts;
+    let config = {};
     if (typeof configName === 'string') {
-      configNameParts = getConfigNameParts(configName);
+      config.name = configName;
+      config.nameParts = getConfigNameParts(configName);
     } else {
-      configNameParts = configName;
-      configName = configNameParts.join(configNameSeparator);
+      config.nameParts = configName;
+      config.name = config.nameParts.join(configNameSeparator);
     }
 
-    const configDir = path.resolve(workingDir, ...configNameParts.map(i => path.join(configDirName, i)));
+    config.dir = path.resolve(workingDir, ...config.nameParts.map(i => path.join(configDirName, i)));
 
     function resolveConfigItemPath(...parts) {
-      return path.resolve(configDir, ...parts);
+      return path.resolve(config.dir, ...parts);
     }
 
     function resolveConfigFile(extension) {
       return resolveConfigItemPath(configFileName + extension);
     }
 
-    let config = {};
-
     let configFile;
 
     for (let loader of loaders) {
       configFile = resolveConfigFile(loader.extension);
       if (fs.existsSync(configFile)) {
-        config = loader.loader(configFile);
+        config.file = configFile;
+        config = Object.assign(loader.loader(configFile), config);
         break;
       }
     }
@@ -78,8 +80,6 @@ module.exports = (configName, options) => {
     if (config.merge === undefined) {
       config.merge = true;
     }
-    config.name = configName;
-    config.nameParts = configNameParts;
     return config;
   }
 
