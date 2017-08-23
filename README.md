@@ -179,14 +179,23 @@ Function accepts two parameters:
     "nameParts": ["a", "b"]
   },
   "currentConfig": {
+    "dir": "/home/user/project/a",
+    "file": "/home/user/project/a/config.js",
     "name": "a",
     "nameParts": ["a"]
+  },
+  "parentConfig": {
+    "dir": "/home/user/project",
+    "name": "",
+    "nameParts": []
   }
 }
 ```
 
-- `config` contains properties of the configuration that we want to load.<br>
-- `currentConfig` contains properties of the configuration in extension hierarchy that is currently being loaded.<br>
+- `config` contains properties of the configuration that we want to load
+- `currentConfig` contains properties of the configuration in extension hierarchy that is currently being loaded
+- `dir` is the directory where configuration is located (only for `currentConfig` and `parentConfig`)
+- `file` is the configuration file (if it exists, only for `currentConfig` and `parentConfig`)
 - `nameParts` is the name of a configuration split by `configNameSeparator`.
 
 ###### `extends` configuration property
@@ -313,6 +322,12 @@ For example, to disable JSON loader and use only JavaScript loader pass `[requir
 
 Function that applies transformation to each configuration in extension hierarchy.<br>
 It accepts configuration object as first argument and object with the additional information as second (see `load` configuration property [documentation](#load-configuration-property)).
+
+##### `merge` option
+
+Function that merges configurations in extension hierarchy.
+It accepts previous configuration object as first argument, current configuration object as second and object with the additional information as third (see `load` configuration property [documentation](#load-configuration-property)).
+By default it overrides values of previous configuration with value of the current.
 
 ##### `workingDir` option
 

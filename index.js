@@ -11,6 +11,7 @@ module.exports = (configName, options) => {
   const workingDir = options.workingDir || process.cwd();
   const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
   const transform = typeof options.transform === 'function' ? options.transform : _ => _;
+  const merge = typeof options.merge === 'function' ? options.merge : (a, b) => Object.assign({}, a, b);
 
   function getConfigNameParts(configName) {
     return configName.split(configNameSeparator);
@@ -21,13 +22,12 @@ module.exports = (configName, options) => {
     originalConfigNameParts = getConfigNameParts(configName);
 
   function load(config) {
-    function loadParentConfig() {
-      return config.nameParts.length > 0
-        ? load(resolve(config.nameParts.slice(0, config.nameParts.length - 1)))
-        : {};
-    }
-
-    const parentConfig = config.extends === undefined ? loadParentConfig() : load(resolve(config.extends));
+    const parentConfig = config.extends === undefined
+      ? (config.nameParts.length > 0
+        ? resolve(config.nameParts.slice(0, config.nameParts.length - 1))
+        : undefined)
+      : resolve(config.extends);
+    const loadedParentConfig = parentConfig ? load(parentConfig) : {};
     const info = {
       config: {
         name: originalConfigName,
@@ -35,12 +35,25 @@ module.exports = (configName, options) => {
       },
       currentConfig: {
         dir: config.dir,
-        file: config.file,
         name: config.name,
         nameParts: config.nameParts
       }
     };
-    return transform(Object.assign(config.merge ? parentConfig : {}, config.load(parentConfig, info)), info);
+    if (config.file) {
+      info.currentConfig.file = config.file;
+    }
+    if (parentConfig) {
+      info.parentConfig = {
+        dir: parentConfig.dir,
+        name: parentConfig.name,
+        nameParts: parentConfig.nameParts
+      };
+      if (parentConfig.file) {
+        info.parentConfig.file = parentConfig.file;
+      }
+    }
+    const loadedConfig = config.load(loadedParentConfig, info);
+    return transform(config.merge ? merge(loadedParentConfig, loadedConfig, info) : loadedConfig, info);
   }
 
   function resolve(configName) {

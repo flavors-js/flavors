@@ -15,6 +15,11 @@ describe('info', function () {
         file: path.resolve(__dirname, 'a', 'config.js'),
         name: 'a',
         nameParts: ['a']
+      },
+      parentConfig: {
+        dir: __dirname,
+        name: '',
+        nameParts: []
       }
     });
   });

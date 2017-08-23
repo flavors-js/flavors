@@ -17,6 +17,11 @@ describe('info', function () {
             file: path.resolve(__dirname, 'a', 'config.js'),
             name: 'a',
             nameParts: ['a']
+          },
+          parentConfig: {
+            dir: __dirname,
+            name: '',
+            nameParts: []
           }
         });
       } else if (config.value === 2) {
@@ -30,6 +35,12 @@ describe('info', function () {
             file: path.resolve(__dirname, 'a', 'b', 'config.js'),
             name: 'a-b',
             nameParts: ['a', 'b']
+          },
+          parentConfig: {
+            dir: path.resolve(__dirname, 'a'),
+            file: path.resolve(__dirname, 'a', 'config.js'),
+            name: 'a',
+            nameParts: ['a']
           }
         });
       }
