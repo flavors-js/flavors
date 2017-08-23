@@ -15,12 +15,12 @@ module.exports = {
         merge = config.merge;
       }
       if (typeof config.load === 'object') {
-        load = c => config.load;
+        load = () => config.load;
       } else if (typeof config.load === 'function') {
         load = config.load;
       }
       if (_extends === undefined && load === undefined && merge === undefined) {
-        load = c => config;
+        load = () => config;
       }
     } else {
       throw new Error(`Can't load configuration from ${configFile}.`);

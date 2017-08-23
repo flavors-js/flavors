@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const { assert, flavors, options } = require('../common.js')(__dirname);
 

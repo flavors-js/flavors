@@ -4,6 +4,7 @@
   "description": "Node.js configuration library.",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint *.js test/**/*.js",
     "test": "mocha test/*/index.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
@@ -33,8 +34,9 @@
   },
   "homepage": "https://github.com/flavors-js/flavors#readme",
   "devDependencies": {
+    "eslint": "^4.5.0",
     "mocha": "^3.3.0",
-    "semantic-release-cli": "^3.0.3",
-    "semantic-release": "^7.0.2"
+    "semantic-release": "^7.0.2",
+    "semantic-release-cli": "^3.0.3"
   }
 }

@@ -73,7 +73,7 @@ module.exports = (configName, options) => {
     }
 
     if (config.load === undefined) {
-      config.load = _ => ({});
+      config.load = () => ({});
     }
     if (config.merge === undefined) {
       config.merge = true;
