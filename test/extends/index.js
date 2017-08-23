@@ -1,10 +1,9 @@
 'use strict';
 
 const { assert, flavors, options } = require('../common.js')(__dirname);
-const c = { value1: 'a1', value2: 'c2' };
 
-describe('dependent config', function () {
-  it('overrides config it extends', function () {
-    assert.deepEqual(flavors('c', options()), c);
+describe('dependent config', () => {
+  it('overrides config it extends', () => {
+    assert.deepEqual(flavors('b-c', options()), { value1: 'a', value2: 'b', value3: 'c' });
   });
 });

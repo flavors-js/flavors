@@ -3,6 +3,6 @@
 module.exports = {
   extends: 'a',
   load: {
-    value2: 'c2'
+    value2: 'b'
   }
 };
