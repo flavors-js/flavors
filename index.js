@@ -1,3 +1,5 @@
+'use strict';
+
 const
   fs = require('fs'),
   path = require('path');
@@ -18,6 +20,27 @@ module.exports = (configName, options) => {
     originalConfigName = configName,
     originalConfigNameParts = getConfigNameParts(configName);
 
+  function load(config) {
+    function loadParentConfig() {
+      return config.nameParts.length > 1
+        ? load(resolve(config.nameParts.slice(0, config.nameParts.length - 1)))
+        : {};
+    }
+
+    const parentConfig = config.extends === undefined ? loadParentConfig() : load(resolve(config.extends));
+    const info = {
+      config: {
+        name: originalConfigName,
+        nameParts: originalConfigNameParts
+      },
+      currentConfig: {
+        name: config.name,
+        nameParts: config.nameParts
+      }
+    };
+    return transform(Object.assign(config.merge ? parentConfig : {}, config.load(parentConfig, info)), info);
+  }
+
   function resolve(configName) {
     let configNameParts;
     if (typeof configName === 'string') {
@@ -35,12 +58,6 @@ module.exports = (configName, options) => {
 
     function resolveConfigFile(extension) {
       return resolveConfigItemPath(configFileName + extension);
-    }
-
-    function loadParentConfig() {
-      return configNameParts.length > 1
-        ? resolve(configNameParts.slice(0, configNameParts.length - 1))
-        : {};
     }
 
     let config = {};
@@ -61,19 +78,10 @@ module.exports = (configName, options) => {
     if (config.merge === undefined) {
       config.merge = true;
     }
-    const parentConfig = config.extends === undefined ? loadParentConfig() : resolve(config.extends);
-    const info = {
-      config: {
-        name: originalConfigName,
-        nameParts: originalConfigNameParts
-      },
-      currentConfig: {
-        name: configName,
-        nameParts: configNameParts
-      }
-    };
-    return transform(Object.assign(config.merge ? parentConfig : {}, config.load(parentConfig, info)), info);
+    config.name = configName;
+    config.nameParts = configNameParts;
+    return config;
   }
 
-  return resolve(configName);
+  return load(resolve(configName));
 };
