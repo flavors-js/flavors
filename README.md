@@ -12,6 +12,8 @@
 </div>
 
 # flavors
+
+[![Join the chat at https://gitter.im/flavors-js/flavors](https://badges.gitter.im/flavors-js/flavors.svg)](https://gitter.im/flavors-js/flavors?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Node.js configuration library.
 
 ## Install
