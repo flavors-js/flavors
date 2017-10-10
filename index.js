@@ -1,6 +1,7 @@
 'use strict';
 
 const
+  deepmerge = require('deepmerge'),
   fs = require('fs'),
   path = require('path');
 
@@ -11,7 +12,7 @@ module.exports = (configName, options) => {
   const workingDir = options.workingDir || process.cwd();
   const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
   const transform = typeof options.transform === 'function' ? options.transform : _ => _;
-  const merge = typeof options.merge === 'function' ? options.merge : (a, b) => Object.assign({}, a, b);
+  const merge = typeof options.merge === 'function' ? options.merge : (x, y) => deepmerge(x, y);
 
   function getConfigNameParts(configName) {
     return configName.split(configNameSeparator);
@@ -33,7 +34,7 @@ module.exports = (configName, options) => {
           ? [config.nameParts.slice(0, config.nameParts.length - 1)]
           : [])
         : (Array.isArray(config.extends) ? config.extends : [config.extends])).map(resolve);
-    const loadedParentConfig = Object.assign({}, ...(parentConfigs.map(load)));
+    const loadedParentConfig = parentConfigs.map(load).reduce(merge, {});
     const info = {
       config: {
         dir: originalConfigDir,

@@ -1,5 +1,7 @@
 'use strict';
 
 module.exports = {
-  value: '0'
+  value: {
+    value1: 'a'
+  }
 };

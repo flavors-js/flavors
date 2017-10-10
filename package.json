@@ -38,5 +38,8 @@
     "mocha": "^4.0.1",
     "semantic-release": "^8.1.2",
     "semantic-release-cli": "^3.2.0"
+  },
+  "dependencies": {
+    "deepmerge": "^2.0.0"
   }
 }
