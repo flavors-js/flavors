@@ -19,7 +19,12 @@ module.exports = (configName, options) => {
 
   const
     originalConfigName = configName,
-    originalConfigNameParts = getConfigNameParts(configName);
+    originalConfigNameParts = getConfigNameParts(configName),
+    originalConfigDir = resolveConfigDir(originalConfigNameParts);
+
+  function resolveConfigDir(nameParts) {
+    return path.resolve(workingDir, ...nameParts.map(i => path.join(configDirName, i)));
+  }
 
   function load(config) {
     const parentConfigs =
@@ -31,6 +36,7 @@ module.exports = (configName, options) => {
     const loadedParentConfig = Object.assign({}, ...(parentConfigs.map(load)));
     const info = {
       config: {
+        dir: originalConfigDir,
         name: originalConfigName,
         nameParts: originalConfigNameParts
       },
@@ -71,7 +77,7 @@ module.exports = (configName, options) => {
       config.name = config.nameParts.join(configNameSeparator);
     }
 
-    config.dir = path.resolve(workingDir, ...config.nameParts.map(i => path.join(configDirName, i)));
+    config.dir = resolveConfigDir(config.nameParts);
 
     function resolveConfigItemPath(...parts) {
       return path.resolve(config.dir, ...parts);

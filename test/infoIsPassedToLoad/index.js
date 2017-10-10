@@ -7,6 +7,7 @@ describe('info', function () {
   it('is passed to `load`', function () {
     assert.deepEqual(flavors('a-b', options()), {
       config: {
+        dir: path.resolve(__dirname, 'a', 'b'),
         name: 'a-b',
         nameParts: ['a', 'b']
       },

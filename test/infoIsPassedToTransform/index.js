@@ -9,6 +9,7 @@ describe('info', function () {
       if (config.value === 1) {
         assert.deepEqual(info, {
           config: {
+            dir: path.resolve(__dirname, 'a', 'b'),
             name: 'a-b',
             nameParts: ['a', 'b']
           },
@@ -32,6 +33,7 @@ describe('info', function () {
       } else if (config.value === 2) {
         assert.deepEqual(info, {
           config: {
+            dir: path.resolve(__dirname, 'a', 'b'),
             name: 'a-b',
             nameParts: ['a', 'b']
           },
