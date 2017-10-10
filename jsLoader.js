@@ -8,7 +8,7 @@ module.exports = {
     if (typeof config === 'function') {
       load = config;
     } else if (typeof config === 'object') {
-      if (typeof config.extends === 'string') {
+      if (typeof config.extends === 'string' || Array.isArray(config.extends)) {
         _extends = config.extends;
       }
       if (typeof config.merge === 'boolean') {

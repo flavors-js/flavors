@@ -22,12 +22,13 @@ module.exports = (configName, options) => {
     originalConfigNameParts = getConfigNameParts(configName);
 
   function load(config) {
-    const parentConfig = config.extends === undefined
-      ? (config.nameParts.length > 0
-        ? resolve(config.nameParts.slice(0, config.nameParts.length - 1))
-        : undefined)
-      : resolve(config.extends);
-    const loadedParentConfig = parentConfig ? load(parentConfig) : {};
+    const parentConfigs =
+      (config.extends === undefined
+        ? (config.nameParts.length > 0
+          ? [config.nameParts.slice(0, config.nameParts.length - 1)]
+          : [])
+        : (Array.isArray(config.extends) ? config.extends : [config.extends])).map(resolve);
+    const loadedParentConfig = Object.assign({}, ...(parentConfigs.map(load)));
     const info = {
       config: {
         name: originalConfigName,
@@ -42,15 +43,19 @@ module.exports = (configName, options) => {
     if (config.file) {
       info.currentConfig.file = config.file;
     }
-    if (parentConfig) {
-      info.parentConfig = {
-        dir: parentConfig.dir,
-        name: parentConfig.name,
-        nameParts: parentConfig.nameParts
+    info.parentConfigs = parentConfigs.map(i => {
+      const c = {
+        dir: i.dir,
+        name: i.name,
+        nameParts: i.nameParts
       };
-      if (parentConfig.file) {
-        info.parentConfig.file = parentConfig.file;
+      if (i.file) {
+        c.file = i.file;
       }
+      return c;
+    });
+    if (parentConfigs.length === 1) {
+      info.parentConfig = info.parentConfigs[0];
     }
     const loadedConfig = config.load(loadedParentConfig, info);
     return transform(config.merge ? merge(loadedParentConfig, loadedConfig, info) : loadedConfig, info);

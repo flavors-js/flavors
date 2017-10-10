@@ -20,7 +20,12 @@ describe('info', function () {
         dir: __dirname,
         name: '',
         nameParts: []
-      }
+      },
+      parentConfigs: [{
+        dir: __dirname,
+        name: '',
+        nameParts: []
+      }]
     });
   });
 });

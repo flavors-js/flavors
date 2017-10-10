@@ -22,7 +22,12 @@ describe('info', function () {
             dir: __dirname,
             name: '',
             nameParts: []
-          }
+          },
+          parentConfigs: [{
+            dir: __dirname,
+            name: '',
+            nameParts: []
+          }]
         });
       } else if (config.value === 2) {
         assert.deepEqual(info, {
@@ -41,7 +46,13 @@ describe('info', function () {
             file: path.resolve(__dirname, 'a', 'config.js'),
             name: 'a',
             nameParts: ['a']
-          }
+          },
+          parentConfigs: [{
+            dir: path.resolve(__dirname, 'a'),
+            file: path.resolve(__dirname, 'a', 'config.js'),
+            name: 'a',
+            nameParts: ['a']
+          }]
         });
       }
       return config;
