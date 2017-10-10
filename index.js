@@ -66,14 +66,14 @@ module.exports = (configName, options) => {
       config.name = config.nameParts.join(configNameSeparator);
     }
 
-    config.dir = path.resolve(workingDir, configDirName, ...config.nameParts.map(i => path.join(i, configDirName)));
+    config.dir = path.resolve(workingDir, ...config.nameParts.map(i => path.join(configDirName, i)));
 
     function resolveConfigItemPath(...parts) {
       return path.resolve(config.dir, ...parts);
     }
 
     function resolveConfigFile(extension) {
-      return resolveConfigItemPath(configFileName + extension);
+      return resolveConfigItemPath(configDirName, configFileName + extension);
     }
 
     let configFile;
