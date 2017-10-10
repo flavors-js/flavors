@@ -304,7 +304,7 @@ Optional object parameter containing various options.
 
 By default composite configurations are loaded from a simple directory structure like `a/b/c` for configuration name `a-b-c`.
 But with multiple configurations like `a-b-c`, `a-b-d`, `a-e-f`, `g-h-i` and when each configuration directory stores additional files it can be more convenient to place configurations under separate directories.
-For instance, setting `configDirName` to `config` makes it search configuration `a-b-c` under `config/a/config/b/config/c` folder.
+For instance, setting `configDirName` to `config` makes it search configuration `a-b-c` under `config/a/config/b/config/c/config` directory.
 
 ##### `configFileName` option
 

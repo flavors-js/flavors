@@ -66,7 +66,7 @@ module.exports = (configName, options) => {
       config.name = config.nameParts.join(configNameSeparator);
     }
 
-    config.dir = path.resolve(workingDir, ...config.nameParts.map(i => path.join(configDirName, i)));
+    config.dir = path.resolve(workingDir, configDirName, ...config.nameParts.map(i => path.join(i, configDirName)));
 
     function resolveConfigItemPath(...parts) {
       return path.resolve(config.dir, ...parts);
