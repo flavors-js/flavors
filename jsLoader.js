@@ -4,7 +4,7 @@ module.exports = {
   extension: '.js',
   loader: configFile => {
     const config = require(configFile);
-    let _extends, load, merge;
+    let _extends, load, merge, postload;
     if (typeof config === 'function') {
       load = config;
     } else if (typeof config === 'object') {
@@ -19,7 +19,12 @@ module.exports = {
       } else if (typeof config.load === 'function') {
         load = config.load;
       }
-      if (_extends === undefined && load === undefined && merge === undefined) {
+      if (typeof config.postload === 'object') {
+        postload = () => config.postload;
+      } else if (typeof config.postload === 'function') {
+        postload = config.postload;
+      }
+      if (_extends === undefined && load === undefined && merge === undefined && postload === undefined) {
         load = () => config;
       }
     } else {
@@ -28,7 +33,8 @@ module.exports = {
     return {
       extends: _extends,
       load: load,
-      merge: merge
+      merge: merge,
+      postload: postload
     };
   }
 };

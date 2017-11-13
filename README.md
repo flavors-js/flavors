@@ -82,6 +82,7 @@ Function that accepts path to configuration file and returns an object with the 
  - [`extends`](#extends-configuration-property)
  - [`load`](#load-configuration-property) (must be a function)
  - [`merge`](#merge-configuration-property)
+ - [`postload`](#postload-configuration-property)
 
 #### JavaScript loader
 
@@ -274,6 +275,41 @@ then config will be loaded as:
 ```javascript
 {
   value2: 2
+}
+```
+
+###### `postload` configuration property
+
+This property is used to set configuration that applies after loading all child configurations.
+
+*a/config.js:*
+
+```javascript
+module.exports = {
+  postload: config => {
+    config.a = 3;
+    return {
+      b: 4
+    };
+  }
+};
+```
+
+*a/b/config.js:*
+
+```javascript
+module.exports = {
+  a: 1,
+  b: 2
+};
+```
+
+*loaded config:*
+
+```javascript
+{
+  a: 3,
+  b: 4
 }
 ```
 

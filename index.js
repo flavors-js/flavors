@@ -13,6 +13,7 @@ module.exports = (configName, options) => {
   const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
   const transform = typeof options.transform === 'function' ? options.transform : _ => _;
   const merge = typeof options.merge === 'function' ? options.merge : (x, y) => deepmerge(x, y);
+  const postload = [];
 
   function getConfigNameParts(configName) {
     return configName.split(configNameSeparator);
@@ -64,6 +65,9 @@ module.exports = (configName, options) => {
     if (parentConfigs.length === 1) {
       info.parentConfig = info.parentConfigs[0];
     }
+    if (config.postload !== undefined) {
+      postload.push({ config, info });
+    }
     const loadedConfig = config.load(loadedParentConfig, info);
     return transform(config.merge ? merge(loadedParentConfig, loadedConfig, info) : loadedConfig, info);
   }
@@ -108,5 +112,6 @@ module.exports = (configName, options) => {
     return config;
   }
 
-  return load(resolve(configName));
+  const config = load(resolve(configName));
+  return postload.reduce((current, next) => merge(current, next.config.postload(current, next.info) || {}), config);
 };
