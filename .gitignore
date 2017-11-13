@@ -38,3 +38,6 @@ jspm_packages
 
 # IntelliJ based IDEs
 .idea
+
+# npm lock file
+package-lock.json
