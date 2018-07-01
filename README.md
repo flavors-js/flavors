@@ -366,7 +366,7 @@ It accepts configuration object as first argument and object with the additional
 
 Function that merges configurations in extension hierarchy.
 It accepts previous configuration object as first argument, current configuration object as second and object with the additional information as third (see `load` configuration property [documentation](#load-configuration-property)).
-By default it overrides values of previous configuration with value of the current.
+By default it calls [deepmerge](https://github.com/KyleAMathews/deepmerge) with default options. You can pass custom deepmerge options with `deepmergeOptions`.
 
 ##### `workingDir` option
 
