@@ -12,7 +12,9 @@ module.exports = (configName, options) => {
   const workingDir = options.workingDir || process.cwd();
   const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
   const transform = typeof options.transform === 'function' ? options.transform : _ => _;
-  const merge = typeof options.merge === 'function' ? options.merge : (x, y) => deepmerge(x, y);
+  const merge = typeof options.merge === 'function'
+    ? options.merge
+    : (x, y) => deepmerge(x, y, options.deepmergeOptions);
   const postload = [];
 
   function getConfigNameParts(configName) {

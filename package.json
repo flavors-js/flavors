@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint *.js test/**/*.js",
-    "test": "mocha test/*/index.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "test": "mocha test/*/index.js"
   },
   "repository": "flavors-js/flavors",
   "keywords": [
