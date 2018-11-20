@@ -72,6 +72,9 @@ module.exports = (configName, options) => {
       postload.push({ config, info });
     }
     const loadedConfig = config.load(loadedParentConfig, info);
+    if (typeof loadedConfig !== 'object' || Array.isArray(loadedConfig)) {
+      throw new Error(`${config.file} must return object.`);
+    }
     return transform(config.merge ? merge(loadedParentConfig, loadedConfig, info) : loadedConfig, info);
   }
 
