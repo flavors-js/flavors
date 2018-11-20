@@ -46,7 +46,8 @@ module.exports = (configName, options) => {
         dir: config.dir,
         name: config.name,
         nameParts: config.nameParts
-      }
+      },
+      options
     };
     if (config.file) {
       info.currentConfig.file = config.file;

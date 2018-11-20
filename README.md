@@ -192,15 +192,29 @@ Function accepts two parameters:
     "dir": "/home/user/project",
     "name": "",
     "nameParts": []
+  },
+  "options": {
+    "configDirName": "/home/user/project"
   }
 }
 ```
 
-- `config` contains properties of the configuration that we want to load
-- `currentConfig` contains properties of the configuration in extension hierarchy that is currently being loaded
-- `dir` is the directory where configuration is located (only for `currentConfig` and `parentConfig`)
-- `file` is the configuration file (if it exists, only for `currentConfig` and `parentConfig`)
-- `nameParts` is the name of a configuration split by `configNameSeparator`.
+* `config` contains properties of the configuration that we want to load
+  - `dir` is the directory where configuration is located
+  - `name` is the name of configuration
+  - `nameParts` is the name of configuration splitted by [`configNameSeparator` options](#confignameseparator-option)
+* `currentConfig` contains properties of the configuration in extension hierarchy that is currently being loaded:
+  - `dir`
+  - `file` is a path to the configuration file if it exists
+  - `name`
+  - `nameParts`
+* `parentConfig` contains properties of the parent configuration if the current config has single parent:
+  - `dir`
+  - `file`
+  - `name`
+  - `nameParts`
+* `parentConfigs` is an array of parent configurations if the current configuration has multiple parents
+* `options` contains object passed to [`options` parameter](#options-parameter)
 
 ###### `extends` configuration property
 

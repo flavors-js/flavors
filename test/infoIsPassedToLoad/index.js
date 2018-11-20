@@ -5,7 +5,8 @@ const path = require('path');
 
 describe('info', function () {
   it('is passed to `load`', function () {
-    assert.deepEqual(flavors('a-b', options()), {
+    const o = options();
+    assert.deepEqual(flavors('a-b', o), {
       config: {
         dir: path.resolve(__dirname, 'a', 'b'),
         name: 'a-b',
@@ -26,7 +27,8 @@ describe('info', function () {
         dir: __dirname,
         name: '',
         nameParts: []
-      }]
+      }],
+      options: o
     });
   });
 });
