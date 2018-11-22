@@ -3,18 +3,24 @@
 const
   deepmerge = require('deepmerge'),
   fs = require('fs'),
-  path = require('path');
+  path = require('path'),
+  defaultOptions = {
+    configDirName: '',
+    configFileName: 'config',
+    configNameSeparator: '-',
+    loaders: [require('./jsLoader'), require('./jsonLoader')],
+    merge: (x, y) => deepmerge(x, y),
+    transform: _ => _
+  };
 
-module.exports = (configName, options) => {
-  const configNameSeparator = options.configNameSeparator || '-';
-  const configDirName = options.configDirName || '';
-  const configFileName = options.configFileName || 'config';
+function flavors(configName, options) {
+  const configNameSeparator = options.configNameSeparator || defaultOptions.configNameSeparator;
+  const configDirName = options.configDirName || defaultOptions.configDirName;
+  const configFileName = options.configFileName || defaultOptions.configFileName;
   const workingDir = options.workingDir || process.cwd();
-  const loaders = options.loaders || [require('./jsLoader'), require('./jsonLoader')];
-  const transform = typeof options.transform === 'function' ? options.transform : _ => _;
-  const merge = typeof options.merge === 'function'
-    ? options.merge
-    : (x, y) => deepmerge(x, y, options.deepmergeOptions);
+  const loaders = options.loaders || defaultOptions.loaders;
+  const transform = typeof options.transform === 'function' ? options.transform : defaultOptions.transform;
+  const merge = typeof options.merge === 'function' ? options.merge : defaultOptions.merge;
   const postload = [];
 
   function getConfigNameParts(configName) {
@@ -69,7 +75,7 @@ module.exports = (configName, options) => {
       info.parentConfig = info.parentConfigs[0];
     }
     if (config.postload !== undefined) {
-      postload.push({ config, info });
+      postload.push({config, info});
     }
     const loadedConfig = config.load(loadedParentConfig, info);
     if (typeof loadedConfig !== 'object' || Array.isArray(loadedConfig)) {
@@ -120,4 +126,8 @@ module.exports = (configName, options) => {
 
   const config = load(resolve(configName));
   return postload.reduce((current, next) => merge(current, next.config.postload(current, next.info) || {}), config);
-};
+}
+
+flavors.defaultOptions = defaultOptions;
+
+module.exports = flavors;
