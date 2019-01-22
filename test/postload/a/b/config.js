@@ -2,6 +2,6 @@
 
 module.exports = {
   postload: config => ({
-    b: 22
+    b: config.a + 1
   })
 };
