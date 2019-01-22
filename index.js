@@ -125,7 +125,7 @@ function flavors(configName, options) {
   }
 
   const config = load(resolve(configName));
-  return postload.reduce((current, next) => merge(current, next.config.postload(current, next.info) || {}), config);
+  return (options.reversePostload ? postload.reverse() : postload).reduce((current, next) => merge(current, next.config.postload(current, next.info) || {}), config);
 }
 
 flavors.defaultOptions = defaultOptions;

@@ -371,16 +371,20 @@ Array of loaders for various configuration file formats.
 By default it's an array of built-in loaders: [JavaScript loader](#javascript-loader) and [JSON loader](#json-loader).<br>
 For example, to disable JSON loader and use only JavaScript loader pass `[require('flavors/jsLoader')]` as `loaders` option value.
 
-##### `transform` option
-
-Function that applies transformation to each configuration in extension hierarchy.<br>
-It accepts configuration object as first argument and object with the additional information as second (see `load` configuration property [documentation](#load-configuration-property)).
-
 ##### `merge` option
 
 Function that merges configurations in extension hierarchy.
 It accepts previous configuration object as first argument, current configuration object as second and object with the additional information as third (see `load` configuration property [documentation](#load-configuration-property)).
 By default it calls [deepmerge](https://github.com/KyleAMathews/deepmerge) with default options.
+
+##### `reversePostload` option
+
+By default [`postload`](#postload-configuration-property) functions are applied in direct order. Passing `true` for this option reverses the order of `postload` execution, so that for the `a-b-c` configuration with `a/config.js`, `a/b/config.js` and `a/b/c/config.js` files firstly `postload` from `a/b/c/config.js` is executed, then returned result is merged with already loaded `a-b-c` configuration, then the same is performed for `a/b/config.js` and `a/config.js` files.
+
+##### `transform` option
+
+Function that applies transformation to each configuration in extension hierarchy.<br>
+It accepts configuration object as first argument and object with the additional information as second (see `load` configuration property [documentation](#load-configuration-property)).
 
 ##### `workingDir` option
 
