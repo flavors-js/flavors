@@ -5,6 +5,6 @@ const a = { value: 'a' };
 
 describe('flavors', function () {
   it('loads json config', function () {
-    assert.deepEqual(flavors('a', options()), a);
+    assert.deepStrictEqual(flavors('a', options()), a);
   });
 });

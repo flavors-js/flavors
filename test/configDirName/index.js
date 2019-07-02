@@ -4,6 +4,6 @@ const { assert, flavors, options } = require('../common.js')(__dirname, { config
 
 describe('config', function () {
   it('uses custom configuration directory name', function () {
-    assert.deepEqual(flavors('a', options()), { value: 'a' });
+    assert.deepStrictEqual(flavors('a', options()), { value: 'a' });
   });
 });

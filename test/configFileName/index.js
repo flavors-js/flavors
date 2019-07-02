@@ -5,6 +5,6 @@ const a = { value: 'a' };
 
 describe('config', function () {
   it('uses custom configuration file name', function () {
-    assert.deepEqual(flavors('a', options()), a);
+    assert.deepStrictEqual(flavors('a', options()), a);
   });
 });

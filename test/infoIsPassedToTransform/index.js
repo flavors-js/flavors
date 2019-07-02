@@ -8,7 +8,7 @@ describe('info', function () {
     const o = options({
       transform: (config, info) => {
         if (config.value === 1) {
-          assert.deepEqual(info, {
+          assert.deepStrictEqual(info, {
             config: {
               dir: path.resolve(__dirname, 'a', 'b'),
               name: 'a-b',
@@ -33,7 +33,7 @@ describe('info', function () {
             options: o
           });
         } else if (config.value === 2) {
-          assert.deepEqual(info, {
+          assert.deepStrictEqual(info, {
             config: {
               dir: path.resolve(__dirname, 'a', 'b'),
               name: 'a-b',

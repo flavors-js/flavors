@@ -6,7 +6,7 @@ const path = require('path');
 describe('info', function () {
   it('is passed to `load`', function () {
     const o = options();
-    assert.deepEqual(flavors('a-b', o), {
+    assert.deepStrictEqual(flavors('a-b', o), {
       config: {
         dir: path.resolve(__dirname, 'a', 'b'),
         name: 'a-b',
