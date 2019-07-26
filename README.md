@@ -23,7 +23,9 @@ Node.js configuration library.
 $ npm install --save-dev flavors
 ```
 
-## Usage
+## Configuration loader
+
+### Loader usage
 
 ```javascript
 const flavors = require('flavors');
@@ -176,7 +178,7 @@ Function accepts two parameters:
 - extended configuration object
 - object with the additional information:
 
-```javascript
+```json
 {
   "config": {
     "name": "a-b",
@@ -332,7 +334,7 @@ module.exports = {
 Configuration definition is the same as when using JavaScript loader [general configuration definition](#general-configuration-definition) except that obviously `load` property can be only an object.<br>
 You can use this loader with `require('flavors/jsonLoader')` (for example in `loaders` [option](#loaders-option)).
 
-### Parameters
+### Configuration loader parameters
 
 ```javascript
 const config = flavors(configName, options);
@@ -399,6 +401,171 @@ To change this behaviour specify `workingDir` option:
 ```javascript
 const config = flavors('dev', {workingDir: __dirname})
 ```
+
+## Command runner
+
+Allows to run commands in the environment with loaded flavors configuration. 
+
+### Runner usage
+
+#### Use runner as module
+```javascript
+const runner = require('flavors/runner');
+runner(command, configName, options);
+```
+
+#### Runner CLI usage
+```bash
+$ FLAVORS_CONFIG_NAME=release-beta npx flavors echo $app_version  
+```
+
+### Runner parameters
+
+#### `command` parameter
+
+Can be a one of the following types:
+
+1. string: shell command, executable name or its path;
+
+```javascript
+runner('echo $value', configName, options);
+runner('/path/to/your/executable', configName, options);
+```
+
+2. non-empty string array containing shell command, executable name or its path as first elements and its arguments as other elements;
+
+```javascript
+runner(['echo', '$value'], configName, options);
+```
+
+3. structure with the following fields:
+  - `command`: required, see 1;
+  - `args`: optional arguments;
+
+```javascript
+runner({command: 'echo', args: ['Hello, ', '$value', '!'] }, configName, options);
+```
+
+4. function receiving flavors configuration and returning value of the one of listed above types or `undefined` (i.e. without `return` statement);
+
+```javascript
+runner(config => ['echo', config.value], configName, options);
+
+runner(config => ({ command: 'echo', args: ['Hello, ', config.value, '!'] }), configName, options);
+
+runner(config => { console.log(config.value); }, configName, options);
+```
+
+5. plugin structure:
+  - `command`: see 4;
+  - `options` - plugin specific flavors options, which is merged with [`options` parameter](#options-parameter);
+
+*example/config.js*:
+```javascript
+module.exports = {
+  value: 'world'
+};
+```
+
+*echoPlugin.js*:
+```javascript
+module.exports = {
+  command: config => ['echo', 'Hello, ' + config.value],
+  options: {
+    transform: config => {
+      config.value += '!';
+      return config;
+    }
+  }
+};
+```
+
+```javascript
+runner(require('./echoPlugin'), 'example', options);
+
+// prints "Hello, world!"
+```
+
+6. structure with the following fields:
+  - `plugin`: see 5;
+  - `args`: array with additional plugin arguments or function receiving flavors configuration and returning this array;
+        
+```javascript
+runner({plugin: require('./echoPlugin'), args: config => [' And goodbye, ' + config.value]}, 'example', options);
+
+// prints "Hello, world! And goodbye, world!"
+``` 
+
+#### `configName` parameter
+
+[Flavors configuration name](https://github.com/flavors-js/flavors#configname-parameter).
+
+#### `options` parameter
+
+Contains the same fields as [flavors `options` parameter](https://github.com/flavors-js/flavors#options-parameter) with following additional parameters:
+
+##### `command` option
+
+When command resolved to executable name and its arguments runner will try to resolve it to command defined in flavors configuration.
+This command must be a string or a function, that accepts arguments, loaded flavors configuration and `runner` function that allows to run subsequent commands.
+
+*commandTest/config.js*:
+```javascript
+module.exports = {
+  value: 'Hello, world!',
+  command: {
+    echo: args => {
+      console.log('custom echo: ' + args.join(' '));
+    },
+    dockerCompose: {
+      test: (args, config) => console.log(config.value)
+    },
+    // "command.enabled" option is set to false to avoid calling this "ls" command recursively and call system "ls" executable
+    ls: (args, config, runner) => runner(['ls', ...args], {command: {enabled: false}})
+  }
+};
+```
+
+```javascript
+runner(['echo', 'a', 'b', 'c'], 'commandTest');
+// prints "custom echo: a b c"
+
+runner(['dockerCompose', 'test'], 'commandTest');
+// prints "Hello, world!"
+
+runner(['ls', '.'], 'commandTest');
+//prints current directory content
+```
+
+###### `command.property` option
+
+Default is `command`. Runner will search commands in flavors configuration under the property name specified in this option.
+
+###### `command.enabled` option
+
+Default is `true`.
+Set to `false` to disable command resolving from flavors configuration.
+
+
+##### `spawn` option
+
+###### `spawn.options` option
+
+Options passed to `child_process.spawnSync()` or `child_process.spawn()` method (see `spawn.sync` [option](#spawn.async-option)).
+For example, use `{ shell: true }` to execute command inside shell to enable variable expansion:
+
+```javascript
+runner('echo $someValue', configName, {shell: true});
+```
+
+###### `spawn.async` option
+
+Set this options to `true` to use [`child_process.spawn()`](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) to run command asynchronously.
+By default [`child.process.spawnSync()`](https://nodejs.org/api/child_process.html#child_process_child_process_spawnsync_command_args_options) is used.
+
+### Runner returned value
+
+Returns result of `child_process.spawn()` or `child_process.spawnSync()` call (see `sync` [option](#spawn.async-option)).
 
 ## Maintainers
 
