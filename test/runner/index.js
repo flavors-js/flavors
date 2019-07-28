@@ -5,7 +5,7 @@ const
   child = require('child_process'),
   path = require('path'),
   runner = require('../../runner'),
-  cliPath = path.resolve(__dirname, '..', '..', 'runner.js');
+  cliPath = path.resolve(__dirname, '..', '..', 'cli.js');
 
 function testPath(...names) {
   return path.resolve(__dirname, ...names);

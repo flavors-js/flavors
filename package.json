@@ -29,7 +29,7 @@
     "runner.js"
   ],
   "bin": {
-    "flavors": "./runner.js"
+    "flavors": "./cli.js"
   },
   "license": "MIT",
   "bugs": {
@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "deepmerge": "^4.0.0",
-    "flat": "^4.1.0"
+    "flat": "^4.1.0",
+    "yargs": "^13.3.0"
   }
 }
