@@ -66,9 +66,12 @@ function resolvePlugin(command, options) {
     }
     command = command.plugin;
   }
-
-  if (command.options) {
-    options = merge(command.options, options);
+  let pluginOptions = command.options;
+  if (pluginOptions) {
+    if (typeof pluginOptions === 'function') {
+      pluginOptions = pluginOptions(options);
+    }
+    options = merge(options, pluginOptions);
     command = command.command;
   }
 

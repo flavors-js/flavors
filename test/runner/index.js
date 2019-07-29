@@ -84,6 +84,29 @@ describe('runner', () => {
         }
       }, 'a', 'commonTest');
     });
+    it('plugin structure with transform override', () => {
+      outputEqual('4 4 4', {
+        args: ['$value', '$value'],
+        plugin: {
+          command: config => ({
+            command: 'echo',
+            args: [config.value]
+          }),
+          options: options => ({
+            transform: config => {
+              config.value += 1;
+              config = options.transform(config);
+              return config;
+            }
+          })
+        }
+      }, 'a', 'commonTest', {
+        transform: config => {
+          config.value *= 2;
+          return config;
+        }
+      });
+    });
     it('config command', () => outputEqual({
       b: 2,
       c: ['a', 'b', 'c']
