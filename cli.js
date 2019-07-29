@@ -1,15 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-module.exports = {
-  localOptionsFile: 'flavorsOptions.local.js',
-  optionsFile: 'flavorsOptions.js'
-};
-
-if (require.main !== module) {
-  return;
-}
-
 function parseArgs(argv) {
   let loaders;
   if (argv.loader) {
@@ -93,54 +84,63 @@ function run(argv) {
   return require('./runner')(command, configName || process.env.FLAVORS_CONFIG_NAME, options);
 }
 
-const yargs = require('yargs');
+module.exports = () => {
+  const yargs = require('yargs');
 
-// noinspection BadExpressionStatementJS
-yargs// eslint-disable-line no-unused-expressions
-  .usage('flavors - print loaded configuration or configure environment and run command.')
-  .command({
-    command: ['print', '*'],
-    desc: 'Load and print configuration with specified name in JSON format',
-    handler: print
-  })
-  .command({
-    command: 'run <command> [args..]',
-    desc: 'Load configuration and run command',
-    handler: run
-  })
-  .options({
-    'dir-name': {
-      alias: 'd',
-      describe: 'Configuration directory name'
-    },
-    'file-name': {
-      alias: 'f',
-      describe: 'Configuration file name (excluding extension)'
-    },
-    'loader': {
-      alias: 'l',
-      describe: 'Name of a Node.js module or a path to it'
-    },
-    'name': {
-      alias: 'n',
-      required: !process.env.FLAVORS_CONFIG_NAME,
-      describe: 'Configuration name. Use this option or FLAVORS_CONFIG_NAME environment variable.'
-    },
-    'options-path': {
-      alias: 'o',
-      describe: 'Path to options file'
-    },
-    'separator': {
-      alias: 's',
-      describe: 'Configuration name separator'
-    },
-    'working-dir': {
-      alias: 'w',
-      describe: 'Directory name where configuration resolving starts from'
-    }
-  })
-  .epilogue('for more information, please read our documentation at https://github.com/flavors-js/flavors.')
-  .help()
-  .version()
-  .wrap(yargs.terminalWidth())
-  .argv;
+  // noinspection BadExpressionStatementJS
+  yargs// eslint-disable-line no-unused-expressions
+    .usage('flavors - print loaded configuration or configure environment and run command.')
+    .command({
+      command: ['print', '*'],
+      desc: 'Load and print configuration with specified name in JSON format',
+      handler: print
+    })
+    .command({
+      command: 'run <command> [args..]',
+      desc: 'Load configuration and run command',
+      handler: run
+    })
+    .options({
+      'dir-name': {
+        alias: 'd',
+        describe: 'Configuration directory name'
+      },
+      'file-name': {
+        alias: 'f',
+        describe: 'Configuration file name (excluding extension)'
+      },
+      'loader': {
+        alias: 'l',
+        describe: 'Name of a Node.js module or a path to it'
+      },
+      'name': {
+        alias: 'n',
+        required: !process.env.FLAVORS_CONFIG_NAME,
+        describe: 'Configuration name. Use this option or FLAVORS_CONFIG_NAME environment variable.'
+      },
+      'options-path': {
+        alias: 'o',
+        describe: 'Path to options file'
+      },
+      'separator': {
+        alias: 's',
+        describe: 'Configuration name separator'
+      },
+      'working-dir': {
+        alias: 'w',
+        describe: 'Directory name where configuration resolving starts from'
+      }
+    })
+    .epilogue('for more information, please read our documentation at https://github.com/flavors-js/flavors.')
+    .help()
+    .version()
+    .wrap(yargs.terminalWidth())
+    .argv;
+};
+
+module.exports.localOptionsFile = 'flavorsOptions.local.js';
+module.exports.optionsFile = 'flavorsOptions.js';
+
+if (require.main === module) {
+  module.exports();
+}
