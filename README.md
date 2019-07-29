@@ -416,8 +416,10 @@ runner(command, configName, options);
 
 #### Runner CLI usage
 ```bash
-$ FLAVORS_CONFIG_NAME=release-beta npx flavors echo $app_version  
+$ FLAVORS_CONFIG_NAME=release-beta npx flavors run 'echo $app_version'  
 ```
+
+See [CLI](#cli).
 
 ### Runner parameters
 
@@ -566,6 +568,29 @@ By default [`child.process.spawnSync()`](https://nodejs.org/api/child_process.ht
 ### Runner returned value
 
 Returns result of `child_process.spawn()` or `child_process.spawnSync()` call (see `sync` [option](#spawn.async-option)).
+
+## CLI
+
+```text
+$ npx flavors --help
+
+flavors - print loaded configuration or configure environment and run command.
+
+Commands:
+  cli.js print                   Load and print configuration with specified name in JSON format                                                                                                                              [default]
+  cli.js run <command> [args..]  Load configuration and run command
+
+Options:
+  --dir-name, -d      Configuration directory name
+  --file-name, -f     Configuration file name (excluding extension)
+  --loader, -l        Name of a Node.js module or a path to it
+  --name, -n          Configuration name. Use this option or FLAVORS_CONFIG_NAME environment variable.                                                                                                                       [required]
+  --options-path, -o  Path to options file
+  --separator, -s     Configuration name separator
+  --working-dir, -w   Directory name where configuration resolving starts from
+  --help              Show help                                                                                                                                                                                               [boolean]
+  --version           Show version number  
+```
 
 ## Maintainers
 

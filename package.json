@@ -1,18 +1,21 @@
 {
   "name": "flavors",
   "version": "0.0.0-development",
-  "description": "Node.js configuration library.",
+  "description": "Node.js configuration resolver and command runner.",
   "main": "index.js",
   "scripts": {
     "lint": "eslint *.js test/**/*.js",
-    "test": "mocha test/loader/*/index.js test/runner/index.js"
+    "test": "mocha test/loader/*/index.js test/*/index.js"
   },
   "repository": "flavors-js/flavors",
   "keywords": [
     "node.js",
     "configuration",
     "config",
-    "resolver"
+    "resolver",
+    "runner",
+    "environment",
+    "tree"
   ],
   "author": {
     "name": "Michael Ledin",
@@ -23,6 +26,7 @@
     "node": ">= 6"
   },
   "files": [
+    "cli.js",
     "index.js",
     "jsLoader.js",
     "jsonLoader.js",
@@ -37,6 +41,7 @@
   },
   "homepage": "https://github.com/flavors-js/flavors#readme",
   "devDependencies": {
+    "babel-eslint": "^10.0.2",
     "eslint": "^6.1.0",
     "flavors-loader-yaml": "^1.0.1",
     "mocha": "^6.2.0",

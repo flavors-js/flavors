@@ -5,6 +5,7 @@ module.exports = {
     mocha: true
   },
   extends: 'eslint:recommended',
+  parser: 'babel-eslint',
   rules: {
     indent: [
       'error',
