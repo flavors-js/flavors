@@ -57,7 +57,6 @@ function tryOptions(customPath, optionsFile, throwError = false) {
 
 function loadOptions(argv) {
   const {options: argvOptions, optionsPath, ...rest} = parseArgs(argv);
-  console.error(optionsPath);
   return {
     options: require('deepmerge').all([
       {

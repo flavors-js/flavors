@@ -101,16 +101,16 @@ function resolveAndRunCommand(command, args, config, options) {
 }
 
 module.exports = (command, configName, options) => {
-  options = merge({
-    command: {
-      property: module.exports.commandProperty,
-      enabled: true
-    }
-  }, options);
+  options = merge(module.exports.defaultOptions, options);
   let args;
   ({args, command, options} = resolvePlugin(command, options));
   return resolveAndRunCommand(command, args, require('.')(configName, options), options);
 };
 
-module.exports.commandProperty = 'command';
+module.exports.defaultOptions = {
+  command: {
+    property: 'command',
+    enabled: true
+  }
+};
 
