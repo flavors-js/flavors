@@ -27,6 +27,8 @@ function normalizeCommand(command, args, config) {
     throw new Error('"command" parameter has invalid type');
   }
 
+  args = args || [];
+
   if (typeof args === 'function') {
     args = args(config);
   }
@@ -34,12 +36,13 @@ function normalizeCommand(command, args, config) {
   if (typeof command === 'function') {
     command = command(config);
     if (command === undefined) {
-      command = () => undefined;
-      return;
+      command = null;
     }
   }
 
-  if (Array.isArray(command)) {
+  if (typeof command === 'string' || command === null) {
+    // noop
+  } else if (Array.isArray(command)) {
     if (command.length === 0) {
       throwCommand();
     } else {
@@ -51,7 +54,7 @@ function normalizeCommand(command, args, config) {
       args = [...command.args, ...args];
     }
     command = command.command;
-  } else if (typeof command !== 'string') {
+  } else {
     throwCommand();
   }
 
@@ -60,26 +63,37 @@ function normalizeCommand(command, args, config) {
 
 function resolvePlugin(command, options) {
   let args = [];
-  if (command.plugin) {
-    if (command.args) {
-      args = command.args;
+  if (command) {
+    let isPlugin = false;
+    if (command.plugin) {
+      if (command.args) {
+        args = command.args;
+      }
+      command = command.plugin;
+      isPlugin = true;
     }
-    command = command.plugin;
-  }
-  let pluginOptions = command.options;
-  if (pluginOptions) {
-    if (typeof pluginOptions === 'function') {
-      pluginOptions = pluginOptions(options);
+
+    let pluginOptions = command.options;
+    if (pluginOptions) {
+      if (typeof pluginOptions === 'function') {
+        pluginOptions = pluginOptions(options);
+      }
+      options = merge(options, pluginOptions);
+      isPlugin = true;
     }
-    options = merge(options, pluginOptions);
-    command = command.command;
+
+    if (isPlugin) {
+      command = command.command;
+    }
   }
 
   return {args, command, options};
 }
 
 function runCommand(command, args, config, options) {
-  if (typeof command === 'function') {
+  if (command === null) {
+    return null;
+  } else if (typeof command === 'function') {
     return command(args, config, (c, runnerOptions) => resolveAndRunCommand(c, [], config, merge(options, runnerOptions || {})));
   }
 

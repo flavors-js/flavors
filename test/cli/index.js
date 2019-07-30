@@ -80,4 +80,6 @@ describe('CLI', () => {
 
   it('uses options from -o file path',
     () => runWithCwdOutputEqual('2', 'optionsFile', ['-n', 'test', '-o', testPath('optionsFile', 'customOptionsFile.js'), 'echo', '$value']));
+
+  it('runs plugin', () => runWithWorkingDirOutputEqual('1', 'plugin', 'a', ['-p', testPath('plugin', 'plugin.js')]));
 });

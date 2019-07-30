@@ -10,12 +10,17 @@ function testPath(...names) {
 }
 
 function outputEqual(expected, command, configName, testName, options) {
-  let actual = runner(command, configName, Object.assign({workingDir: testPath(testName)}, options));
-  if (actual.stdout) {
-    actual = actual.stdout.toString();
-    expected += '\n';
+  const closure = () => runner(command, configName, Object.assign({workingDir: testPath(testName)}, options));
+  if (expected instanceof Error) {
+    assert.throws(closure, expected);
+  } else {
+    let actual = closure();
+    if (actual && actual.stdout) {
+      actual = actual.stdout.toString();
+      expected += '\n';
+    }
+    assert.deepStrictEqual(actual, expected);
   }
-  assert.deepStrictEqual(actual, expected);
 }
 
 describe('runner', () => {
@@ -49,6 +54,8 @@ describe('runner', () => {
     });
   });
   describe('runs', () => {
+    it('null command', () => outputEqual(null, null, 'a', 'commonTest'));
+    it('undefined command with error', () => outputEqual(new Error('"command" parameter has invalid type'), undefined, 'a', 'commonTest'));
     it('string', () => {
       outputEqual('1 1 1', {
         args: ['$value', '$value'],

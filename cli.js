@@ -11,9 +11,16 @@ function parseArgs(argv) {
     }
     loaders = loaders.map(require);
   }
+  let command, plugin;
+  if (argv.plugin) {
+    plugin = require(argv.command);
+  } else {
+    command = argv.command;
+  }
   return {
     command: {
-      command: argv.command,
+      command,
+      plugin,
       args: argv.args
     },
     configName: argv.name,
@@ -97,6 +104,13 @@ module.exports = () => {
     .command({
       command: 'run <command> [args..]',
       desc: 'Load configuration and run command',
+      builder: yargs => yargs.options({
+        'plugin': {
+          alias: 'p',
+          boolean: true,
+          describe: 'Treat command as Node.js module name or path.'
+        }
+      }),
       handler: run
     })
     .options({
