@@ -21,7 +21,7 @@ function parseArgs(argv) {
     command: {
       command,
       plugin,
-      args: [...[argv.args || []], ...(argv['--'] || [])]
+      args: [...(argv.args || []), ...(argv['--'] || [])]
     },
     configName: argv.name,
     options: {
