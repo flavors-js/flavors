@@ -90,11 +90,11 @@ function resolvePlugin(command, options) {
   return {args, command, options};
 }
 
-function runCommand(command, args, config, options) {
+function runCommand(command, args, config, configName, options) {
   if (command === null) {
     return null;
   } else if (typeof command === 'function') {
-    return command(args, config, (c, runnerOptions) => resolveAndRunCommand(c, [], config, merge(options, runnerOptions || {})));
+    return command(args, config, (c, runnerOptions) => module.exports(c, configName, merge(options, runnerOptions || {})));
   }
 
   const child = require('child_process'),
@@ -112,16 +112,13 @@ function resolveCommand(command, args, config, options) {
   return resolveConfigCommand(command, args, config, options);
 }
 
-function resolveAndRunCommand(command, args, config, options) {
-  ({args, command} = resolveCommand(command, args, config, options));
-  return runCommand(command, args, config, options);
-}
-
 module.exports = (command, configName, options) => {
   options = merge(module.exports.defaultOptions, options);
   let args;
   ({args, command, options} = resolvePlugin(command, options));
-  return resolveAndRunCommand(command, args, require('.')(configName, options), options);
+  const config = require('.')(configName, options);
+  ({args, command} = resolveCommand(command, args, config, options));
+  return runCommand(command, args, config, configName, options);
 };
 
 module.exports.defaultOptions = {

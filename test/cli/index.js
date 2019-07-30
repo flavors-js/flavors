@@ -12,7 +12,7 @@ function testPath(...names) {
 }
 
 function outputEqual(expected, args, dir = '', env = {}) {
-  assert.deepStrictEqual(child.execFileSync(`${cliPath}`, args, {
+  assert.deepStrictEqual(child.execFileSync(cliPath, args, {
     cwd: testPath(dir),
     env: Object.assign({}, process.env, env)
   }).toString(), expected + '\n');
