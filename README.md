@@ -592,6 +592,14 @@ Options:
   --version           Show version number  
 ```
 
+If you run commands with arguments that start with dash (`-z`) or double-dash (`--some-option`) or it's the same as flavors CLI options then add `--` after command:
+
+```text
+$ npx flavors run -n "myConfig" echo -- -n --hello --world
+
+-n --hello --world
+```
+ 
 ## Maintainers
 
 - [@mxl](https://github.com/mxl)

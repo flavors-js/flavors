@@ -21,7 +21,7 @@ function parseArgs(argv) {
     command: {
       command,
       plugin,
-      args: argv.args
+      args: [...[argv.args || []], ...(argv['--'] || [])]
     },
     configName: argv.name,
     options: {
@@ -95,6 +95,10 @@ module.exports = () => {
 
   // noinspection BadExpressionStatementJS
   yargs// eslint-disable-line no-unused-expressions
+    .strict()
+    .parserConfiguration({
+      'populate--': true
+    })
     .usage('flavors - print loaded configuration or configure environment and run command.')
     .command({
       command: ['print', '*'],
