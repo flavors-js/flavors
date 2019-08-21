@@ -548,26 +548,23 @@ Default is `command`. Runner will search commands in flavors configuration under
 Default is `true`.
 Set to `false` to disable command resolving from flavors configuration.
 
+##### `async` option
 
-##### `spawn` option
+Set this options to `true` to use [`child_process.spawn()`](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) to run command asynchronously.
+By default [`child.process.spawnSync()`](https://nodejs.org/api/child_process.html#child_process_child_process_spawnsync_command_args_options) is used.
 
-###### `spawn.options` option
+##### `spawnOptions` option
 
-Options passed to `child_process.spawnSync()` or `child_process.spawn()` method (see `spawn.sync` [option](#spawn.async-option)).
+Options passed to `child_process.spawnSync()` or `child_process.spawn()` method (see `async` [option](#async-option)).
 For example, use `{ shell: true }` to execute command inside shell to enable variable expansion:
 
 ```javascript
 runner('echo $someValue', configName, {shell: true});
 ```
 
-###### `spawn.async` option
-
-Set this options to `true` to use [`child_process.spawn()`](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) to run command asynchronously.
-By default [`child.process.spawnSync()`](https://nodejs.org/api/child_process.html#child_process_child_process_spawnsync_command_args_options) is used.
-
 ### Runner returned value
 
-Returns result of `child_process.spawn()` or `child_process.spawnSync()` call (see `sync` [option](#spawn.async-option)).
+Returns result of `child_process.spawn()` or `child_process.spawnSync()` call (see `async` [option](#async-option)).
 
 ## CLI
 
