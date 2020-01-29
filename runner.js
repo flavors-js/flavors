@@ -97,12 +97,9 @@ function runCommand(command, args, config, configName, options) {
     return command(args, config, (c, runnerOptions) => module.exports(c, configName, merge(options, runnerOptions || {})));
   }
 
-  const child = require('child_process'),
-    defaultSpawnOptions = {
-      shell: true
-    };
+  const child = require('child_process');
 
-  return (options.async ? child.spawn : child.spawnSync)(command, args, merge.all([defaultSpawnOptions, {
+  return (options.async ? child.spawn : child.spawnSync)(command, args, merge.all([{
     env: Object.assign({}, process.env, require('flat').flatten(config, {delimiter: '_'})),
   }, (options.spawnOptions || {})]));
 }
@@ -125,6 +122,9 @@ module.exports.defaultOptions = {
   command: {
     property: 'command',
     enabled: true
+  },
+  spawnOptions: {
+    shell: true
   }
 };
 

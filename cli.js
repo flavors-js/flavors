@@ -17,6 +17,9 @@ function parseArgs(argv) {
   } else {
     command = argv.command;
   }
+  const spawnOptions = {
+    shell: argv.shell
+  };
   return {
     command: {
       command,
@@ -28,7 +31,8 @@ function parseArgs(argv) {
       configDirName: argv.dirName,
       configFileName: argv.fileName,
       configNameSeparator: argv.separator,
-      loaders: loaders,
+      loaders,
+      spawnOptions,
       workingDir: argv.workingDir
     },
     optionsPath: argv.optionsPath
@@ -113,7 +117,12 @@ module.exports = () => {
           alias: 'p',
           boolean: true,
           describe: 'Treat command as Node.js module name or path.'
-        }
+        },
+        'shell': {
+          boolean: true,
+          default: require('./runner').defaultOptions.spawnOptions.shell,
+          describe: 'Runs command inside of a shell. Uses /bin/sh on Unix, and process.env.ComSpec on Windows.',
+        },
       }),
       handler: run
     })
