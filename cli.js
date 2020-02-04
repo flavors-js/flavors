@@ -97,6 +97,7 @@ module.exports = () => {
   yargs// eslint-disable-line no-unused-expressions
     .strict()
     .parserConfiguration({
+      'duplicate-arguments-array': false,
       'populate--': true
     })
     .usage('flavors - print loaded configuration or configure environment and run command.')
@@ -133,7 +134,8 @@ module.exports = () => {
       },
       'loader': {
         alias: 'l',
-        describe: 'Name of a Node.js module or a path to it'
+        array: true,
+        describe: 'Loaders. Names of a Node.js modules or their paths.'
       },
       'name': {
         alias: 'n',

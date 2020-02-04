@@ -22,8 +22,8 @@ function runWithCwdOutputEqual(expected, cwd, args, env = {}) {
   return outputEqual(expected, ['run', ...args], cwd, env);
 }
 
-function runWithWorkingDirOutputEqual(expected, workingDir, name, args, env = {}) {
-  return outputEqual(expected, ['run', '-w', workingDir, '-n', name, ...args], '', env);
+function runWithWorkingDirOutputEqual(expected, workingDir, name, command, options = [], env = {}) {
+  return outputEqual(expected, ['-w', workingDir, '-n', name, ...options, 'run', ...command], '', env);
 }
 
 function printOutputEqual(expected, workingDir, name, args = [], env = {}) {
@@ -38,10 +38,9 @@ describe('CLI', () => {
   it('runs runs command with dash options', () => runWithWorkingDirOutputEqual('-t 1', 'commonTest', 'a', ['echo', '--', '-t', '1']));
   it('runs runs command with double-dash options', () => runWithWorkingDirOutputEqual('--test 1', 'commonTest', 'a', ['echo', '--', '--test', '1']));
   it('flattens config', () => runWithWorkingDirOutputEqual('1', 'nested', 'a', ['echo $nested_value']));
-  it('applies configDirName', () => runWithWorkingDirOutputEqual('1', 'configDirName', 'a', ['-d', 'config', 'echo $value']));
-  it('applies configFileName', () => runWithWorkingDirOutputEqual('1', 'configFileName', 'a', ['-f', 'custom', 'echo $value']));
-  it('applies loaders', () => runWithWorkingDirOutputEqual('123', 'loaders', 'a-b-c', ['-l', testPath('..', '..', 'jsonLoader.js'), '-l',
-    testPath('..', '..', 'jsLoader.js'), '-l', 'flavors-loader-yaml', 'echo $value1$value2$value3']));
+  it('applies configDirName', () => runWithWorkingDirOutputEqual('1', 'configDirName', 'a', ['echo $value'], ['-d', 'config']));
+  it('applies configFileName', () => runWithWorkingDirOutputEqual('1', 'configFileName', 'a', ['echo $value'], ['-f', 'custom']));
+  it('applies loaders', () => runWithWorkingDirOutputEqual('123', 'loaders', 'a-b-c', ['echo $value1$value2$value3', '-l', testPath('..', '..', 'jsonLoader.js'), testPath('..', '..', 'jsLoader.js'), 'flavors-loader-yaml']));
   it('uses options from flavors options file: ' + cli.optionsFile,
     () => runWithCwdOutputEqual('2', 'flavorsOptions', ['echo', '$value'], {FLAVORS_CONFIG_NAME: 'test'}));
 
