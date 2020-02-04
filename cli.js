@@ -17,9 +17,7 @@ function parseArgs(argv) {
   } else {
     command = argv.command;
   }
-  const spawnOptions = {
-    shell: argv.shell
-  };
+  const {optionsPath, shell, workingDir} = argv;
   return {
     command: {
       command,
@@ -32,10 +30,12 @@ function parseArgs(argv) {
       configFileName: argv.fileName,
       configNameSeparator: argv.separator,
       loaders,
-      spawnOptions,
-      workingDir: argv.workingDir
+      spawnOptions: {
+        shell
+      },
+      workingDir
     },
-    optionsPath: argv.optionsPath
+    optionsPath
   };
 }
 
@@ -44,26 +44,22 @@ function resolveOptionsPath(customPath, optionsFile) {
 
   return customPath
     ? (customPath.endsWith('.js')
-      ? customPath
+      ? path.resolve(customPath)
       : path.resolve(customPath, optionsFile))
     : path.resolve(process.cwd(), optionsFile);
 }
 
-function tryOptionsWithPath(path, throwError = false) {
-  if (path) {
+function tryOptions(customPath, optionsFile) {
+  if (customPath || optionsFile) {
     try {
-      return require(path);
+      return require(resolveOptionsPath(customPath, optionsFile));
     } catch (e) {
-      if (e.code !== 'MODULE_NOT_FOUND' || throwError) {
+      if (e.code !== 'MODULE_NOT_FOUND' || customPath) {
         throw e;
       }
     }
   }
   return {};
-}
-
-function tryOptions(customPath, optionsFile, throwError = false) {
-  return tryOptionsWithPath(resolveOptionsPath(customPath, optionsFile), throwError);
 }
 
 function loadOptions(argv) {
@@ -75,7 +71,7 @@ function loadOptions(argv) {
           stdio: 'inherit'
         }
       },
-      tryOptionsWithPath(optionsPath, true),
+      tryOptions(optionsPath, module.exports.optionsFile),
       argvOptions,
       tryOptions(process.env.FLAVORS_OPTIONS_PATH, module.exports.optionsFile),
       tryOptions(process.env.FLAVORS_LOCAL_OPTIONS_PATH, module.exports.localOptionsFile)
